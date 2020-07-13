@@ -72,15 +72,15 @@ def main():
                         help='Path the logs will be saved. default: local temp', default='%temp%')
     parser.add_argument('-p', '--parse_log', required=True, dest='parse_log',
                         help='Single name of log file i.e. Security or a comma separated list of log names of log files to be parsed.')
-    parser.add_argument('-w', '--wait_time', required=False, dest='wait_time',
+    parser.add_argument('-w', '--wait_time', required=False, dest='wait_time', type=int,
                         help='Time between running the command and parsing the logs in seconds. Default 10 seconds', default=10)
     parser.add_argument('-c', '--command', required=False, dest='command',
                         help='Single command to be run.')
     parser.add_argument('-i', '--input_commands', required=False, dest='input_commands',
                         help='Input text file of commands. New line delimiter.')
     parser.add_argument('-x', '--xml', required=False, dest='xml',
-                        help='Convert the evtx files in out_path to xml. default: False', default=False)
-    parser.add_argument('-t', '--terminate', required=False, dest='terminate',
+                        help='Convert the evtx files in out_path to xml. default: False', action='store_true')
+    parser.add_argument('-t', '--terminate', required=False, dest='terminate', type=int,
                         help='Terminate the subproccess and parse logs in seconds. default: 60 seconds', default=60)
 
     args = parser.parse_args()
