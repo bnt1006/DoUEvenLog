@@ -26,22 +26,28 @@ def run_command(out_path, parse_logs, wait_time, commands, terminate):
     for command in commands:
         before_time = datetime.utcnow().isoformat()
         command = 'Invoke-Expression \"' + command.strip() + '\"'
+        s_pid = 0
         try:
             print("Attempting to execute: " + command)
-            subprocess.Popen(["powershell.exe", command]).wait(terminate)
-            time.sleep(wait_time)
+            process = subprocess.Popen(["powershell.exe", command])
+            s_pid = process.pid
+            process.wait(terminate)
         except subprocess.TimeoutExpired:
-            print("Process Timed out. Attempting parse logs")
+            print("Process Timed out. Waiting " + str(wait_time) + " seconds then attempting parse logs")
+            process.kill()
+        time.sleep(wait_time)
         after_time = datetime.utcnow().isoformat()
         for log in parse_logs:
-            export_file = out_path + "\\" + log.replace("/","_") + before_time.split(".")[0].replace(":","_") + ".evtx"
+            export_file = out_path + "\\" + log.replace("/","_") + "-" + before_time.split("T0")[0] + "PID-" + str(s_pid) + ".evtx"
             print("Writing logs to: " + export_file)
             parse_command = 'wevtutil epl \"' + log + "\" \"" + export_file + \
                             '\" /q:"*[System[TimeCreated[@SystemTime>=' + "\'" + before_time + "\'" + ' and @SystemTime<' + "\'" + after_time + "\'" + ']]]"'
             try:
-                subprocess.Popen(["powershell.exe", parse_command]).wait(terminate)
+                process = subprocess.Popen(["powershell.exe", parse_command])
+                process.wait(terminate)
             except subprocess.TimeoutExpired:
                 print("Writing to logs timed out.")
+                process.kill()
 
 """
 Description: convert evtx files found in the out_path directory to XML
