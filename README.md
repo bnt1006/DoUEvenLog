@@ -50,7 +50,7 @@ XML conversion is dependent on williballenthin's python-evtx https://pypi.org/pr
  ### Output:
  - The script will save the evtx files in "out_path" default value the local user temp directory.
  - If the -x flag is used an xml document will be saved in the same location
- - Naming schema of output is Log Name + Time of Execution
+ - Naming schema of output is Log Name + Time of Execution + PID
  
  ## Examples:
  - Run a single command and parse the "Windows Powershell" log
